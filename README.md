@@ -3,3 +3,6 @@ A browser based Quick Draw app using Google’s Quick Draw Data set to autocompl
 
 # demo
 https://keshav9316.github.io/Magenta-Quick-Draw/index1.html
+
+https://user-images.githubusercontent.com/45781643/117280936-c0e1c300-ae80-11eb-865e-4ee7d8777f07.mp4
+
