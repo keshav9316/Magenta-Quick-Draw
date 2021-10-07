@@ -29,15 +29,15 @@ function startDrawing(){
              HOWEVER, "seedpath" is an array of objects.             */
 
 function sketchRNNstart(){
-  personDrawing = false;
+  personDrawing = false; // control is taken back from user
 
 //RNN
 let rdpPoints = [];
-rdpPoints.push(seedpath[0]);
-rdp2(seedpath,0,seedpath.length-1,rdpPoints);
-rdpPoints.push(seedpath[seedpath.length-1]);
+rdpPoints.push(seedpath[0]); // seedpath is the array of our drawing-----------push start coordinate
+rdp2(seedpath,0,seedpath.length-1,rdpPoints);  // RDP algorithm optimization call on our drawing-----> fills the rdpPoints[] with optimized coordinates
+rdpPoints.push(seedpath[seedpath.length-1]); // push last drawn coordinate
 //console.log(rdpPoints);
-//drawing simplified rnn
+                   //drawing simplified rnn
  background(235);
  stroke(0);
  strokeWeight(4);
@@ -55,7 +55,7 @@ rdpPoints.push(seedpath[seedpath.length-1]);
  x = rdpPoints[rdpPoints.length - 1].x;
  y = rdpPoints[rdpPoints.length - 1].y;
  drawPoints = [];
- // Converting to SketchRNN type object predict on simplified rnn
+                      // Converting structure to SketchRNN type object predict on simplified rnn
  for (let i = 1; i < rdpPoints.length; i++) {
    let strokePath = {
      dx: rdpPoints[i].x - rdpPoints[i - 1].x,
@@ -66,31 +66,33 @@ rdpPoints.push(seedpath[seedpath.length-1]);
  }
 
 //
-  sketchRNN.generate(drawPoints, gotStrokePath);  //generate :generates a sketch based upon its fed input_sketch and calls gotStokePath as callback
+  sketchRNN.generate(drawPoints, gotStrokePath);  // generate :generates a sketch based upon its fed input_sketch and calls gotStokePath as callback
   drawPoints = null;
   rdpPoints = null;
   // draws seedpath sketch and at end of it draw current sketch
   //console.log(sketchRNN);
 }
 
-function setup() {
+function setup() {  // runs only once
  let canvas = createCanvas(600,600);
  canvas.mousePressed( startDrawing );
- canvas.mouseReleased( sketchRNNstart );
+ canvas.mouseReleased( sketchRNNstart );   // will be on hold untill draw() execute for that frame
 
- background(230);
+ background(230); // background of canvas
 //  x = width/2;
 //  y = height/2;
   //sketchRNN.generate(gotStrokePath);
 }
 
-function draw() {
+
+//while time passes every frame is also being passed those frames are handled here
+function draw() { // infinite loop for every frame
  stroke(0);
  strokeWeight(4);
  // background(255);
 //  translate(width/2,height/2);
 
-if(personDrawing == "true"){
+if(personDrawing == "true"){  // check if we are drawing 
 
   // let drawingPath = {
   //   dx : mouseX -pmouseX,
@@ -104,13 +106,13 @@ if(personDrawing == "true"){
   // y += drawingPath.dy;
 
 
-   seedpath.push(createVector(mouseX, mouseY));
-   line(mouseX, mouseY, pmouseX, pmouseY);
+   seedpath.push(createVector(mouseX, mouseY));  // in case we are push coordinates in a array on which automation shall proceed
+   line(mouseX, mouseY, pmouseX, pmouseY);  // and draw 
 }
 
-  if(currentStroke){
+  if(currentStroke){   // if we are still drawing wont't execute, but if we have stopped drawing our automated drawing shall take place
 
-    if(nextpen == "end"){
+    if(nextpen == "end"){ // if model has ended drawing ..................3
       sketchRNN.reset();
       sketchRNNstart();  //rnn call
       currentStroke = null;
@@ -118,15 +120,15 @@ if(personDrawing == "true"){
       return;
     }
 
-    if (nextpen == "down"){
+    if (nextpen == "down"){ // if model is still drawing ......................2
       line(x, y, x + currentStroke.dx, y + currentStroke.dy);
     }
 
     x = x + currentStroke.dx;
     y = y + currentStroke.dy;
-    nextpen = currentStroke.pen;
+    nextpen = currentStroke.pen;  // if model has still not started drawing...................1
     currentStroke = null;
-  sketchRNN.generate(gotStrokePath);
+  sketchRNN.generate(gotStrokePath); // generate drawings coordinates.
 
   }
 
