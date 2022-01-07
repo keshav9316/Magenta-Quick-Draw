@@ -8,7 +8,7 @@ let seedpath =[];
 let drawPoints =[];
 
 function preload(){
- sketchRNN = ml5.sketchRNN('syringe');
+ sketchRNN = ml5.sketchRNN('calculator');
 }
 
 function gotStrokePath(error , result){
